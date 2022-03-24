@@ -1,0 +1,19 @@
+AUDITORY DEBUGGER (audbg)
+
+This tiny C program will start a process of your choice and attach to it with
+ptrace (acting like a debugger). It then single steps through the process and
+writes some information about the process to standard output on every step. The
+intended use case is to write the program counter or other register on each
+step of the process, and then pipe that data to an audio player so that you can
+hear the internal state of the process.
+
+Why? Just for fun :)
+
+Compile with:
+$ gcc -O3 audbg.c -oaudbg
+
+Example usage:
+$ ./audbg /path/to/child child args | aplay -c2 -r96 -fS16_LE
+
+Having issues? You may need to run this:
+$ sudo sysctl kernel.yama.ptrace_scope=0
