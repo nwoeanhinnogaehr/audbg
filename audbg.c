@@ -31,11 +31,15 @@ int main(int argc, char **argv, char **envp) {
     struct user_regs_struct regs;
     while(1) {
         ptrace(PTRACE_SINGLESTEP, pid, 0, 0);
+        if (waitpid(pid, 0, WSTOPPED) == -1) {
+            fprintf(stderr, "error (maybe process exited)\n");
+            exit(1);
+        }
         ptrace(PTRACE_GETREGS, pid, 0, &regs);
 
         // generate audio samples on standard output.
         // here we are just taking the low 16 bits of some register.
-        short s = regs.rip;
+        int s = regs.rax;
         write(1, &s, 2);
     }
 }
